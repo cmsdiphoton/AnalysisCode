@@ -3,8 +3,13 @@
 ** Analysis **
 This directory contains the necessary code to make the analysis histograms from ggNtuples.
 
+* AllieCode/ana.C defines what files will be used.
+* AllieCode/ggEventTree.h defines the variables in the ggNtuples that will be used by the analyzer
+* AllieCode/SusyEventAnalyzer.cc is the analysis code that sorts the events into signal and control regions and makes all the histograms.
 * Diempt.C will take the input gg and ff or ee histograms of diempt and calculate the diempt ratios which can be used to reweight the MET distributions. This macro also makes a nice plot of the diempt ratio and calculates the appropriate errors.
 * FinalAnalysis.C takes the output of the event loop and calculates the final background estimates and errors and makes several plots of the final quantities.
+* GGM_Combination/finishHists_*C calculates the uncertainties that we implemented for the GGM combination paper.
+* lester_mt2_bisect.h is the code to calculate MT2.
 * ratioMethod.C performs the fit to the gg/ff ratio.
 
 
@@ -20,7 +25,7 @@ Code to make limit plots from the datacards.
 Code to manipulate the ggNtuples.
 
 * Condor_skimNtuples contains example code to submit condor jobs on the LPC to skim ggNtuples and only select interesting events.
-
+* sortSignalByMass.py will take the events in a ggNtuple and sort it by squark/gluino vs neutralino mass.
 
 
 ** Utils **
