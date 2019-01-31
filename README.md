@@ -8,6 +8,21 @@ This directory contains the necessary code to make the analysis histograms from 
 * ratioMethod.C performs the fit to the gg/ff ratio.
 
 
+
+** Limits **
+Code to make limit plots from the datacards.
+
+* PlotsSMSFiles is a directory that contains all the files you need to edit to use the PlotsSMS package to make nice looking limit plots.
+
+
+
+** NtupleCode **
+Code to manipulate the ggNtuples.
+
+* Condor_skimNtuples contains example code to submit condor jobs on the LPC to skim ggNtuples and only select interesting events.
+
+
+
 ** Utils **
 This directory contains random useful pieces of code
 
