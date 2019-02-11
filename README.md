@@ -17,6 +17,9 @@ This directory contains the necessary code to make the analysis histograms from 
 ** Limits **
 Code to make limit plots from the datacards.
 
+* MakeCountingFiles.ipynb is a jupyter notebook for creation of the datacards and scripts needed to run combine
+* MakeLimitPlots.ipynb is a jupyter notebook for creation of limit plots from the counting files created by combine
+* mlfit.ipynb and .py creates diagnostic plots of the limit calculation
 * PlotsSMSFiles is a directory that contains all the files you need to edit to use the PlotsSMS package to make nice looking limit plots.
 
 
