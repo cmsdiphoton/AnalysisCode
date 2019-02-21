@@ -4,6 +4,7 @@
 This directory contains the necessary code to make the analysis histograms from ggNtuples.
 
 * AllieCode/ana.C defines what files will be used.
+* AllieCode/BatchMode has the files you need to run the analysis jobs over condor at the LPC. Note that the LPC recently refactored their condor farm, so this might not work out of the box. First run setupCondor.sh, then make sure anaMASTER.C is pointing to the right datasets and file locations, and then submit the jobs with PythonSubmit.py. There is also a script to clean up all of the files after the jobs run.
 * AllieCode/ggEventTree.h defines the variables in the ggNtuples that will be used by the analyzer
 * AllieCode/SusyEventAnalyzer.cc is the analysis code that sorts the events into signal and control regions and makes all the histograms.
 * Diempt.C will take the input gg and ff or ee histograms of diempt and calculate the diempt ratios which can be used to reweight the MET distributions. This macro also makes a nice plot of the diempt ratio and calculates the appropriate errors.
