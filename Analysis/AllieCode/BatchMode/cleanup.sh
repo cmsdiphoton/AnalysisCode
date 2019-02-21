@@ -1,0 +1,22 @@
+#! /bin/bash                                                                            
+
+rm ana1*C
+rm ana2*C
+rm ana3*C
+rm ana4*C
+rm ana5*C
+rm ana6*C
+rm ana7*C
+rm ana8*C
+rm ana9*C
+rm condor_ana0*
+rm condor_ana1*
+rm condor_ana2*
+rm condor_ana3*
+rm condor_ana4*
+rm condor_ana5*
+rm condor_ana6*
+rm condor_ana7* 
+rm condor_ana8*
+rm condor_ana9*
+rm JobCondor/*
