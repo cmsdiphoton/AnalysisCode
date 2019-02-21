@@ -1,0 +1,258 @@
+#include "CMS_lumi.C"
+#include <iostream>
+#include <TH1.h>
+#include <TROOT.h>
+#include <TStyle.h>
+#include <TGraphAsymmErrors.h>
+#include <TGraphErrors.h>
+#include <TMath.h>
+#include <TAttFill.h>
+#include <TFile.h>
+#include <iostream>
+#include <TFractionFitter.h>
+#include <TCanvas.h>
+#include <TPad.h>
+#include <THStack.h>
+#include <TLegend.h>
+#include <TLatex.h>
+#include <TLine.h>
+
+
+TH1F *getOverflow(TH1F *h_Sample){
+  int bin = h_Sample->GetNbinsX();
+  float lastBinValue = h_Sample->GetBinContent(bin);
+  float lastBinError = h_Sample->GetBinError(bin);
+
+  float lastBinOverflowValue = h_Sample->GetBinContent(bin+1);
+  float lastBinOverflowError = h_Sample->GetBinError(bin+1);
+
+  float finalValue = lastBinValue + lastBinOverflowValue;
+  float finalError = sqrt(lastBinError*lastBinError + lastBinOverflowError*lastBinOverflowError);
+
+  h_Sample->SetBinContent(bin, finalValue);
+  h_Sample->SetBinContent(bin+1, 0);
+  h_Sample->SetBinError(bin, finalError);
+  h_Sample->SetBinError(bin+1, 0);
+
+  return h_Sample;
+
+}
+
+void Compare_ff_Unweighted(){
+
+gROOT->SetStyle("Plain");
+gStyle->SetOptTitle(0);
+gStyle->SetOptStat(0);
+
+
+    int H_ref = 476;
+    int W_ref = 720;
+
+    // references for T, B, L, R
+    float T = 0.08*H_ref;
+    float B = 0.12*H_ref;
+    float L = 0.12*W_ref;
+    float R = 0.04*W_ref;
+
+    TString cmsText     = "CMS";
+    float cmsTextFont   = 61;  // default is helvetic-bold
+    float cmsTextSize   = 0.5;
+
+    TString extraText   = "Preliminary";
+    float extraTextFont = 52;  // default is helvetica-italics
+    float extraOverCmsTextSize  = 0.7;
+    float extraTextSize = extraOverCmsTextSize*cmsTextSize;
+
+    TString lumiText = "35.8 fb^{-1}";
+
+
+//Int_t   NbinsMET      = 18;
+//Float_t XbinsMET[19]  = {0,3,6,9,12,15,18,22,26,29,32,36,40,45,50,60,75,85,100};
+
+Int_t   NbinsMET      = 24;
+Float_t XbinsMET[25]  = {0,3,6,9,12,15,18,22,26,29,32,36,40,45,50,60,75,85,100,115, 130, 150, 185,250 ,350};
+
+
+TFile *f_new = TFile::Open("../newSkimm/analysis_NewMuonRecoVetoRemoveFinal_test.root");
+
+TH1F *h_ff_MEt_new = new TH1F("h_ff_MEt_new","Missing Transverse Energy ",NbinsMET,XbinsMET);
+
+TTree *newfaketree = (TTree*)f_new->Get("fftree");
+
+newfaketree->Draw("MET>>h_ff_MEt_new");
+
+
+
+TFile *f_old = TFile::Open("/Users/lisapaspalaki/Documents/T5gg_analysis/BasicCode/FebruaryStatus/newSkims_oldFakeDeFinition/analysis_NewMuonRecoVetoRemoveFinal_test.root");
+TH1F *h_ff_MEt = new TH1F("h_ff_MEt","Missing Transverse Energy ",NbinsMET,XbinsMET);
+
+TTree *faketree = (TTree*)f_old->Get("fftree");
+
+faketree->Draw("MET>>h_ff_MEt");
+
+
+h_ff_MEt->Sumw2();
+h_ff_MEt_new->Sumw2();
+
+
+h_ff_MEt= getOverflow(h_ff_MEt);
+h_ff_MEt_new= getOverflow(h_ff_MEt_new);
+
+
+h_ff_MEt->Scale(1.0,"width");
+h_ff_MEt_new->Scale(1.0,"width");
+
+
+h_ff_MEt->SetLineColor(kBlue);
+h_ff_MEt_new->SetLineColor(kRed);
+
+h_ff_MEt->SetMarkerStyle(20);
+h_ff_MEt_new->SetMarkerStyle(20);
+
+h_ff_MEt->SetMarkerColor(kBlue);
+h_ff_MEt_new->SetMarkerColor(kRed);
+
+/// compute scale factor for ff ->scale for ggMET<50 GeV //
+
+float denomf = h_ff_MEt->Integral(0, 14);
+float numf = h_ff_MEt_new->Integral(0, 14);
+float scalefactorF;
+
+cout << "sum ff "<< denomf<< endl;
+cout << "sum gg" << numf << endl;
+			if(denomf !=0){
+				scalefactorF = numf/denomf;
+
+			}
+
+		else {
+
+			scalefactorF =1;
+		}
+
+	//h_ff_MEt->Scale(scalefactorF);
+
+  h_ff_MEt->Scale(1/h_ff_MEt->Integral());
+  h_ff_MEt_new->Scale(1/h_ff_MEt_new->Integral());
+
+
+//cout << "scale factor for ff " << scalefactorF <<endl;
+
+
+
+TLine *line = new TLine(0.,1.,350.,1.);
+line->SetLineColor(kBlack);
+line->SetLineWidth(2);
+line->SetLineStyle(2);
+
+
+///ready to make the plots!!!
+
+TCanvas *c = new TCanvas("c","canvas",950,950);
+
+
+c->cd();
+c->SetFillColor(0);
+c->SetBorderMode(0);
+c->SetFrameFillStyle(0);
+c->SetFrameBorderMode(0);
+c->SetLeftMargin( L/W_ref );
+c->SetRightMargin( R/W_ref );
+c->SetTopMargin( T/H_ref );
+c->SetBottomMargin( B/H_ref );
+c->SetTickx(0);
+c->SetTicky(0);
+//c->SetGrid();
+//gStyle->SetGridStyle(3);
+
+
+c->cd();
+
+TPad *pad1 = new TPad("pad1","pad1",0, 0.3, 1, 1.0);
+
+ pad1->SetBottomMargin(0); // Upper and lower plot are joined
+ pad1->SetLogy();
+ //pad1->SetGridx();         // Vertical grid
+ //pad1->SetGridy();         // Vertical grid
+ pad1->Draw();             // Draw the upper pad: pad1
+ pad1->cd();               // pad1 becomes the current pad
+     // Draw h1
+
+
+     h_ff_MEt->Draw();
+     h_ff_MEt_new->Draw("sames");
+
+
+ //h_ff_MEt->SetTitle("Missing Transverse Energy");
+
+ h_ff_MEt->GetYaxis()->SetTitle("Events/GeV");
+
+TLegend *leg1 = new TLegend(0.589662, 0.719724 , 0.899789, 0.901694);
+  leg1->SetFillColor(kWhite);
+  leg1->SetTextSize(0.03);
+  leg1->SetHeader("Unweighted E_{T}^{miss} distributions");
+  leg1->AddEntry(h_ff_MEt_new, "Low R9 fakes", "LP");
+  leg1->AddEntry(h_ff_MEt, "Nominal fakes", "LP");
+
+  leg1->Draw();
+
+CMS_lumi(pad1,4,1);
+
+c->cd();          // Go back to the main canvas before defining pad2
+ TPad *pad2 = new TPad("pad2", "pad2", 0, 0.05, 1, 0.3);
+ pad2->SetTopMargin(0);
+ pad2->SetBottomMargin(0.2);
+ //pad2->SetGridx(); // vertical grid
+ pad2->Draw();
+ pad2->cd();       // pad2 becomes the current pad
+
+
+ h_ff_MEt_new->GetYaxis()->SetTitleSize(28);
+  h_ff_MEt_new->GetYaxis()->SetTitleFont(43);
+//hCand10b->GetYaxis()->SetTitleOffset(1.55);
+h_ff_MEt_new ->GetYaxis()->SetTitleOffset(1.0);
+h_ff_MEt_new ->GetYaxis()->SetTitle("events");
+
+
+
+ // Define the ratio plot
+
+ TH1F *h3 = (TH1F*)h_ff_MEt_new->Clone("h3");
+ h3->SetMinimum(0);  // Define Y ..
+ h3->SetMaximum(3.5); // .. range
+ h3->Divide(h_ff_MEt);
+
+ h3->SetMarkerStyle(kFullCircle);
+ h3->SetMarkerSize(1.2);
+
+
+//line->Draw();
+
+h3->Sumw2();
+ h3->SetLineColor(kBlack);
+ h3->SetMarkerColor(kBlack);
+ //h3->SetMarkerStyle(20);
+ h3->Draw("epsame");
+ line->Draw();
+
+ h3->SetTitle("Ratios");
+
+ h3->GetYaxis()->SetTitle("lowR9 ff/nominal ff");
+ h3->GetYaxis()->SetNdivisions(505);
+ h3->GetYaxis()->SetTitleSize(22);
+ h3->GetYaxis()->SetTitleFont(43);
+ h3->GetYaxis()->SetTitleOffset(0.8);
+ h3->GetYaxis()->SetLabelFont(43); // Absolute font size in pixel (precision 3)
+ h3->GetYaxis()->SetLabelSize(19);
+
+ // X axis ratio plot settings
+ h3->GetXaxis()->SetTitleSize(22);
+ h3->GetXaxis()->SetTitleFont(43);
+ h3->GetXaxis()->SetTitleOffset(3.2);
+ h3->GetXaxis()->SetLabelFont(43); // Absolute font size in pixel (precision 3)
+ h3->GetXaxis()->SetLabelSize(24);
+ h3->GetXaxis()->SetTitle("E_{T}^{miss} [GeV]");
+
+
+
+}

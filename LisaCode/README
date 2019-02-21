@@ -1,0 +1,15 @@
+//////////////
+
+To run the basic code do: 
+ root -l rootcmds.C
+
+ This will run the Selector T5gg_analyzer.C and will
+ apply the basic event selection and will create 4 new trees
+ (gg, ee, ff , eg)  and basic histograms.
+
+ DiEmpt_Reweighting file contains the code for DiEmpt_Reweighting
+ mkDataRatio.C gets the DiEmpt ratio in control region
+ and then analyzers analyzeElectronTree_data.C and analyzeFakeTree_data.C
+ applie the DiEMpt weights.
+
+ The output root file is used in BasicMacros to draw plots
