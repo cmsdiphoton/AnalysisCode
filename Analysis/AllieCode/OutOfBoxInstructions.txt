@@ -1,0 +1,23 @@
+mkdir DiphotonCode
+cd DiphotonCode
+git clone https://github.com/cmsdiphoton/AnalysisCode
+cmsrel CMSSW_8_0_24
+mkdir CMSSW_8_0_24/src/SusyCode
+mkdir CMSSW_8_0_24/src/SusyCode/src
+mkdir CMSSW_8_0_24/src/SusyCode/macro
+cp AnalysisCode/Analysis/AllieCode/* CMSSW_8_0_24/src/SusyCode/macro
+cd CMSSW_8_0_24/src/SusyCode/macro
+cmsenv
+mv SusyNtuplizer_LinkDef.h ../src
+mv ggEventTree.h ../src
+
+*** This needs to be redone everytime something changes in ggEventTree.h
+make
+
+** This needs to be redone everytime anything is changed in the main analysis code, SusyEventAnalyzer.cc or .h
+root -l
+root [0] .L SusyEventAnalyzer.cc+
+root [1] .q
+
+** Adjust the parameters (mostly SetProcessNEvents and what files are added to the TChain) in ana.C and then run the code:
+root -q -b ana.C

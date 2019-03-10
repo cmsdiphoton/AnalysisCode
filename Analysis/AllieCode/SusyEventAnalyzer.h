@@ -85,6 +85,7 @@ class SusyEventAnalyzer{
     
     void CategorizeEvents(int pho1, int pho2, int pho3, float Rho, bool &gogg, bool &goee, bool &goeg, bool &goff, bool &gogammafake, bool &gogf, bool &gofg, bool &goef, bool &use13, bool &use23, bool& goffmix, bool& goffhigh);
     void CategorizeEvents(int pho1, int pho2, float Rho, bool &gogg, bool &goee, bool &goeg,bool &goff, bool &gogammafake, bool &gogf, bool &gofg);
+    void CategorizeEvents(int pho1, int pho2, int pho3, float Rho, bool &gogg, bool &goee, bool &goeg, bool &goff, bool &gogammafake, bool &gogf, bool &gofg, bool &goef, bool &use13, bool&use23);
 
 
     //parameter configuration functions
