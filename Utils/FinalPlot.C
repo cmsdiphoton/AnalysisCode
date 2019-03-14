@@ -66,31 +66,33 @@ TH1F *getOverflow(TH1F *h_Sample){
 
 
 
-
 void FinalTexMaker(TLatex *&tex1, TLatex *&tex2, TLatex *&tex3){
-    tex1 = new TLatex(0.88,0.909,"35.9 fb^{-1} (13 TeV)");
+    //tex1 = new TLatex(0.88,0.909,"35.9 fb^{-1} (13 TeV)");
+    tex1 = new TLatex(0.88,0.92,"35.9 fb^{-1} (13 TeV)");
     tex1->SetNDC();
     tex1->SetTextAlign(31);
     tex1->SetTextFont(42);
-    tex1->SetTextSize(0.0546);
+//    tex1->SetTextSize(0.0546);
+    tex1->SetTextSize(0.07);
     tex1->SetLineWidth(2);
     tex1->Draw();
     
-    tex2 = new TLatex(0.12,0.96,"CMS");//(0.15,0.88,"CMS");
+    tex2 = new TLatex(0.12,0.967,"CMS");//(0.15,0.88,"CMS");
     tex2->SetNDC();
     tex2->SetTextAlign(13);
     tex2->SetTextFont(61);
-    tex2->SetTextSize(0.065);
+    tex2->SetTextSize(0.075);
     tex2->SetLineWidth(1);
     tex2->Draw();
     
-    tex3 = new TLatex(0.23,0.96,"Preliminary");//(0.15,0.84,"Simulation")
+//    tex3 = new TLatex(0.23,0.96,"Preliminary");//(0.15,0.84,"Simulation")
+    tex3 = new TLatex(0.22,0.955,"Preliminary");//(0.15,0.84,"Simulation")
     tex3->SetNDC();
     tex3->SetTextAlign(13);
     tex3->SetTextFont(52);
-    tex3->SetTextSize(0.060);
+    tex3->SetTextSize(0.072);
     tex3->SetLineWidth(1);
-    //  tex3->Draw();
+//    tex3->Draw();
     
 }
 
@@ -99,6 +101,7 @@ void FinalPlot(){
     
     int xlow(0),xup(350);
     bool blinded = false;
+    gStyle->SetLineWidth(3);
     
     int   NbinsMET      = 24;
     Float_t XbinsMET[25]  = {0,3,6,9,12,15,18,22,26,29,32,36,40,45,50,60,75,85,100,115, 130, 150, 185,250 ,350};
@@ -122,7 +125,7 @@ void FinalPlot(){
     h_mGlu1700nNeu1000->SetMarkerStyle(kFullTriangleDown);
     h_mGlu1700nNeu1000->SetLineColor(kMagenta+1);
     h_mGlu1700nNeu1000->SetMarkerColor(kMagenta+1);
-    h_mGlu1700nNeu1000->SetMarkerSize(1.0);
+    h_mGlu1700nNeu1000->SetMarkerSize(1.1);
     
     numEvents = 5273;
     xsec = 0.000981077*1000;
@@ -133,7 +136,7 @@ void FinalPlot(){
     h_mGlu2000nNeu1000->SetMarkerStyle(kFullDiamond);
     h_mGlu2000nNeu1000->SetLineColor(kViolet-6);
     h_mGlu2000nNeu1000->SetMarkerColor(kViolet-6);
-    h_mGlu2000nNeu1000->SetMarkerSize(1.1);
+    h_mGlu2000nNeu1000->SetMarkerSize(1.2);
     /*Float_t sigscale = 35.882548708 * 0.981077 / 5273;
     
     Double_t sigx[24], sigy[24], sigxeu[24], sigxel[24], sigyeu[24], sigyel[24];
@@ -244,7 +247,6 @@ void FinalPlot(){
     //make Stack Plot
     
     THStack *hs = new THStack("hs",";;Events/GeV");
-    //hs->GetYaxis()->SetLabelSize(0.08);
 
     int offset = -3;
     h_QCD->SetFillColor(kRed+offset);
@@ -264,7 +266,7 @@ void FinalPlot(){
     //hs->Add(h_QCDwithTTJ);
     
     h_DoublePhoton_MET->SetMarkerStyle(kFullCircle);
-    h_DoublePhoton_MET->SetMarkerSize(0.8);
+    h_DoublePhoton_MET->SetMarkerSize(1.0);
     
     h_DoublePhoton_MET->SetLineColor(1);
     h_DoublePhoton_MET->SetMarkerColor(1);
@@ -311,16 +313,17 @@ void FinalPlot(){
     pad1->Draw();
     pad1->cd();
     pad1->SetLogy();
+    pad1->SetFrameLineWidth(3);
+
     pad1->SetBottomMargin(0);
     gStyle->SetOptStat(0);
     
     hs->Draw("Histo");
     hs->GetXaxis()->SetTitleSize(0.12);
-    hs->GetXaxis()->SetLabelSize(0.08);
-    hs->GetYaxis()->SetTitleSize(0.05);
-    hs->GetYaxis()->SetLabelSize(0.05);
-    hs->GetYaxis()->CenterTitle();
-    hs->GetYaxis()->SetTitleOffset(0.75);
+    hs->GetYaxis()->SetTitleSize(0.061);
+    hs->GetYaxis()->SetLabelSize(0.058);
+//    hs->GetYaxis()->CenterTitle();
+    hs->GetYaxis()->SetTitleOffset(0.87);
     
     TLine *line2 = new TLine(100,0.0002,100,9000);
     line2->SetLineStyle(2);
@@ -331,6 +334,10 @@ void FinalPlot(){
     h_mGlu1700nNeu1000->Draw("pe same");
     h_mGlu2000nNeu1000->Draw("pe same");
     
+    cout << "Asymm errs on background: +" << gr_met_error->GetErrorYhigh(23) << ", -" << gr_met_error->GetErrorYlow(23) << endl;
+    cout << "Stat errs on data:        +" << h_DoublePhoton_MET->GetBinErrorUp(24) << ", -" << h_DoublePhoton_MET->GetBinErrorLow(24) << endl;
+    gr_met_error->Print();
+    
 //    gr_met_error->Draw("e2 same");
     
     hs->SetMinimum(0.001);
@@ -340,13 +347,13 @@ void FinalPlot(){
     gr_mGlu2000nNeu100 ->Draw("same PZ");
     gr_mGlu2000nNeu1900->Draw("same PZ");
     */
-    TLegend *leg = new TLegend(0.57,0.59,0.9,0.88); // cms wants 0.5,0.6,0.9,0.9
+    TLegend *leg = new TLegend(0.57,0.46,0.9,0.9); // cms wants 0.5,0.6,0.9,0.9
     leg->SetFillColor(kWhite);
     leg->SetTextFont(42); // cms wants 42
     leg->SetBorderSize(0);
     leg->SetShadowColor(kWhite);
     leg->SetFillStyle(0);
-    leg->AddEntry(h_DoublePhoton_MET,"Data","lep");
+    leg->AddEntry(h_DoublePhoton_MET,"Observed","lep");
     leg->AddEntry(h_QCD,"QCD","f");
     leg->AddEntry(h_EWK,"EWK","f");
     leg->AddEntry(h_ggZGGToNuNuGG,"Z#gamma#gamma","f");
@@ -366,13 +373,19 @@ void FinalPlot(){
     TLatex *tex3;
     FinalTexMaker(tex1,tex2,tex3);
     
+    TLine *line5 = new TLine(350,0.0001,350,1);
+    line5->SetLineWidth(3);
+    line5->Draw();
+    
     ctemp->cd();
-    TPad *pad2 = new TPad("pad2","pad2",0,0,1,0.3);
+    TPad *pad2 = new TPad("pad2","pad2",0,0.00,1,0.3);
     
     pad2->Draw();
     pad2->cd();
     pad2->SetTopMargin(0);
-    pad2->SetBottomMargin(0.27);
+    pad2->SetBottomMargin(0.34);
+    pad2->SetFrameLineWidth(3);
+
     TH1F *h2 = (TH1F*)h_DoublePhoton_MET->Clone("h2");
     h2->Reset();
     h2->GetYaxis()->SetTitle("#gamma#gamma/bkg");
@@ -385,6 +398,25 @@ void FinalPlot(){
     h3->GetXaxis()->SetTitle("p_{T}^{miss} (GeV)");
     h3->GetXaxis()->SetTitleOffset(0.82);
     
+    const int nLoop = 25;
+    Double_t y[nLoop-1],
+    yel[nLoop-1],
+    yeu[nLoop-1];
+    Double_t y2[nLoop-1],
+    y2el[nLoop-1],
+    y2eu[nLoop-1];
+    
+    Double_t * x = gr_met_error->GetX();
+    Double_t * xel = gr_met_error->GetEXhigh();
+    Double_t * xeu = gr_met_error->GetEXlow();
+    
+    TH1F * hackPoisson = new TH1F("hackPoisson","",110,-0.5,109.5);
+    hackPoisson->SetBinErrorOption(TH1::kPoisson);
+    
+    for(int i = 0; i < 110; i++){
+        for (int j = 0; j < i; j++ ) hackPoisson->Fill(i);
+    }
+    
     for(int i=0;i<=tempGG->GetNbinsX();++i){
         double qcd  = h_QCD->GetBinContent(i+1);
         double ewk  = h_EWK->GetBinContent(i+1);
@@ -393,54 +425,110 @@ void FinalPlot(){
         double sys = gr_met_error->GetErrorY(i)/(central);
         //cout << gr_met_error->GetErrorY(i) << endl;
         double err_bkg = gr_met_error->GetErrorY(i);
+        
+        if(i==22) cout << h_QCD->GetBinCenter(i) << " " << sys << endl;
 
         h3->SetBinContent(i+1,1);
-        h3->SetBinError(i+1,sys);
+        //h3->SetBinError(i+1,sys);
+        h3->SetBinError(i+1,0.0);
         
+        y[i] = 1.0;
+        if(central > 0.0){
+            yeu[i] = (gr_met_error->GetErrorYhigh(i)/central);
+            yel[i] = (gr_met_error->GetErrorYlow(i)/central);
+        }
         if(i <= h_DoublePhoton_MET->GetNbinsX()){
-            double y = h_DoublePhoton_MET->GetBinContent(i+1);
+            double yi = h_DoublePhoton_MET->GetBinContent(i+1);
             double erry = h_DoublePhoton_MET->GetBinError(i+1);
             
             double erz(0);
-            if(y!=0 && central!=0) erz= (y/central)*sqrt((erry/y)*(erry/y)+(err_bkg/central)*(err_bkg/central));
+            if(yi!=0 && central!=0) erz= (erry/central);//erz= (yi/central)*sqrt((erry/yi)*(erry/yi))+(err_bkg/central)*(err_bkg/central));
             
-            if(central!=0)h2->SetBinContent(i+1,y/central);
-            h2->SetBinError(i+1,erz); //used to be erz
-            cout << erry/central << endl;
+            if(central!=0)
+            {
+                h2->SetBinContent(i+1,yi/central);
+                y2[i] = yi/central;
+            }
+            h2->SetBinError(i+1,0.0);
+            //cout << erry/central << endl;
+            
+            if(i >= 18){
+                int unweighted = 0.0;
+                if(i == 18) unweighted = 105;
+                else if(i == 19) unweighted = 39;
+                else if(i == 20) unweighted = 21;
+                else if(i == 21) unweighted = 21;
+                else if(i == 22) unweighted = 11;
+                else if(i == 23) unweighted = 12;
+                
+                //cout << "int?" << unweighted << " vs " << (yi*h_DoublePhoton_MET->GetBinWidth(i+1)) << endl;
+                y2el[i] = hackPoisson->GetBinErrorLow(unweighted)/unweighted*yi/central;
+                y2eu[i] = hackPoisson->GetBinErrorUp(unweighted)/unweighted*yi/central;
+                cout << "center = " << yi/central << ", poisson error on " << unweighted << " is -" << hackPoisson->GetBinErrorLow(unweighted) << ", + " << hackPoisson->GetBinErrorUp(unweighted) <<" and the total error is then " << y2el[i] << endl;
+            }
+            else{
+                y2el[i] = erz;
+                y2eu[i] = erz;
+            }
         }
     }
     
+    TGraphAsymmErrors * hshaded = new TGraphAsymmErrors(nLoop-1,x,y,xel,xeu,yel,yeu);
+    TGraphAsymmErrors * hratio = new TGraphAsymmErrors(nLoop-1,x,y2,xel,xeu,y2el,y2eu);
+    hratio->SetLineWidth(2);
+    
+    cout << "x: " << x[23] << ", +" << xeu[23] << ", -" << xel[23] << endl;
+    cout << "y:" << y[23] << ", +" << yeu[23] << ", -" << yel[23] <<endl;
+
+    cout << "x: " << x[21] << ", +" << xeu[21] << ", -" << xel[21] << endl;
+    cout << "y:" << y[21] << ", +" << yeu[21] << ", -" << yel[21] <<endl;
+
+    
+       cout << "h2:" << h2->GetBinErrorUp(24)  << " " << h2->GetBinErrorLow(24) << " " << h2->GetBinError(24) << " " << h2->GetBinCenter(24) << endl;
+    cout << "h3:" << h3->GetBinErrorUp(24)  << " " << h3->GetBinErrorLow(24) << " " << h3->GetBinError(24) << " " << h3->GetBinCenter(24) << endl;
+    
     h3->GetXaxis()->SetRangeUser(xlow,xup);
-    h3->GetXaxis()->SetLabelSize(0.1);
-    h3->GetXaxis()->SetTitleSize(0.10);
+    h3->GetXaxis()->SetLabelSize(0.13);
+    h3->GetXaxis()->SetTitleSize(0.14);
     h3->GetXaxis()->SetTitle("p_{T}^{miss} (GeV)");
     h3->GetXaxis()->SetTitleOffset(1.0);
 
     
     h3->SetTitle("");
-    h3->GetYaxis()->SetRangeUser(0.0,2.9);
+    h3->GetYaxis()->SetRangeUser(0.0,3.25);
     h3->GetYaxis()->SetNdivisions(6);
-    
-    h3->GetYaxis()->SetTitle("Data/Bkg");
-    h3->GetYaxis()->SetTitleOffset(0.32);
-    h3->GetYaxis()->SetLabelSize(0.1);
-    h3->GetYaxis()->SetTitleSize(0.10);
+    h3->GetXaxis()->SetTickLength(0.07);
+
+    h3->GetYaxis()->SetTitle("Obs/Bkgd");
+    h3->GetYaxis()->SetTitleOffset(0.34);
+    h3->GetYaxis()->SetLabelSize(0.13);
+    h3->GetYaxis()->SetTitleSize(0.14);
     h3->GetYaxis()->CenterTitle();
-    h3->SetFillStyle(1001);
-    h3->SetFillColor(kGray);
-    h3->SetLineColor(kGray);
-    h3->SetMarkerColor(kGray);
+    hshaded->SetFillStyle(1001);
+    hshaded->SetFillColor(kGray);
+    hshaded->SetLineColor(kGray);
+    hshaded->SetMarkerColor(kGray);
+    
 
     TLine *line1 = new TLine(xlow,1,xup,1);
     line1->SetLineStyle(2);
     h3->Draw("e2");
+    hshaded->Draw("e2 same");
     h2->Draw("ep same");
+    hratio->Draw("pZ same");
     //leg2->Draw("same");
     line1->Draw();
     
-    TLine *line3 = new TLine(100,0.0,100,2.9);
+    TLine *line3 = new TLine(100,0.0,100,3.25);
     line3->SetLineStyle(2);
     line3->Draw();
+    
+    TLine *line4 = new TLine(350,0.0,350,3.25);
+    line4->SetLineWidth(3);
+    line4->Draw();
+    
+    
+    //h3->Draw("sameaxis");
     
    /* TLegend *leg2 = new TLegend(0.78,0.77,0.85,0.91);
     leg2->SetText
